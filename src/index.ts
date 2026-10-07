@@ -56,6 +56,9 @@ export default {
 			if (roomId == null || roomId === '') {
 				return new Response('Missing game ID', { status: 400 });
 			}
+			if (request.headers.get('Upgrade') !== 'websocket') {
+				return new Response('Expected WebSocket', { status: 426 });
+			}
 			const room = env.ROOM.getByName(roomId);
 			return room.handleConnect(null);
 		} else if (url.pathname.startsWith('/broadcast/room/') && request.method === 'POST') {
