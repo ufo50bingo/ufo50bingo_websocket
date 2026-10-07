@@ -23,7 +23,11 @@
 		"Room": {
 			"type": "durable-object",
 			"storage": "sqlite"
-		}
+		},
+		"MyDurableObject": {
+			"type": "durable-object",
+			"state": "deleted"
+	  }
 	}
 	/**
 	 * Smart Placement
