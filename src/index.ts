@@ -5,6 +5,26 @@ export class Room extends DurableObject<Env> {
 		super(ctx, env);
 	}
 
+	async fetch(request: Request): Promise<Response> {
+		const pair = new WebSocketPair();
+		const [client, server] = Object.values(pair);
+
+		this.ctx.acceptWebSocket(server);
+
+		// TODO: Authenticate players
+		const playerId = null;
+		if (playerId != null) {
+			server.serializeAttachment({
+				playerId,
+			});
+		}
+
+		return new Response(null, {
+			status: 101,
+			webSocket: client,
+		});
+	}
+
 	public handleConnect(playerId: null | number): Response {
 		const pair = new WebSocketPair();
 		const [client, server] = Object.values(pair);
@@ -60,7 +80,7 @@ export default {
 				return new Response('Expected WebSocket', { status: 426 });
 			}
 			const room = env.ROOM.getByName(roomId);
-			return room.handleConnect(null);
+			return room.fetch(request);
 		} else if (url.pathname.startsWith('/broadcast/room/') && request.method === 'POST') {
 			// TODO: Validate token
 			const roomId = url.pathname.split('/')[3];
