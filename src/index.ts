@@ -87,8 +87,11 @@ export class Room extends DurableObject<Env> {
 		});
 	}
 
-	async broadcast(data: string): Promise<void> {
+	async broadcast(data: string, exclude?: WebSocket): Promise<void> {
 		for (const ws of this.ctx.getWebSockets()) {
+			if (ws === exclude) {
+				continue;
+			}
 			try {
 				ws.send(data);
 			} catch {}
@@ -143,7 +146,7 @@ export class Room extends DurableObject<Env> {
 		if (payload.type !== 'event' || typeof payload.message !== 'string') {
 			return;
 		}
-		await this.broadcast(payload.message);
+		await this.broadcast(payload.message, ws);
 	}
 
 	webSocketClose(ws: WebSocket, code: number, reason: string, wasClean: boolean): void {}
