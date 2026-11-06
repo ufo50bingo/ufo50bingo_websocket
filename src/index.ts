@@ -149,9 +149,14 @@ export class Room extends DurableObject<Env> {
 		await this.broadcast(payload.message, ws);
 	}
 
-	webSocketClose(ws: WebSocket, code: number, reason: string, wasClean: boolean): void {}
+	webSocketClose(ws: WebSocket, code: number, reason: string, wasClean: boolean) {
+		console.log('DO ws close', { code, reason, wasClean, ts: new Date().toISOString() });
+		ws.close(code, reason);
+	}
 
-	webSocketError(ws: WebSocket, error: unknown): void {}
+	webSocketError(ws: WebSocket, error: unknown) {
+		console.log('DO ws error', { error: String(error), ts: new Date().toISOString() });
+	}
 }
 
 export default {
