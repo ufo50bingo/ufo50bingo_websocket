@@ -153,7 +153,9 @@ export class Room extends DurableObject<Env> {
 
 	webSocketClose(ws: WebSocket, code: number, reason: string, wasClean: boolean) {
 		console.log('DO ws close', { code, reason, wasClean, ts: new Date().toISOString() });
-		ws.close(code, reason);
+		try {
+			ws.close(code === 1005 || code === 1006 ? 1000 : code, reason);
+		} catch {}
 	}
 
 	webSocketError(ws: WebSocket, error: unknown) {
