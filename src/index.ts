@@ -96,7 +96,11 @@ export class Room extends DurableObject<Env> {
 			}
 			try {
 				ws.send(data);
-			} catch {}
+			} catch {
+				try {
+					ws.close(1011, 'send failed');
+				} catch {}
+			}
 		}
 	}
 
