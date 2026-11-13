@@ -49,7 +49,9 @@ async function validateToken(masterSecret: string, gameId: number, suppliedToken
 export class Room extends DurableObject<Env> {
 	constructor(ctx: DurableObjectState, env: Env) {
 		super(ctx, env);
-		this.env = env;
+
+		// this lets the runtime answer without waking the DO
+		this.ctx.setWebSocketAutoResponse(new WebSocketRequestResponsePair(JSON.stringify({ type: 'ping' }), JSON.stringify({ type: 'pong' })));
 	}
 
 	async fetch(request: Request): Promise<Response> {
